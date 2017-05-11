@@ -1,11 +1,11 @@
 #include <iostream>
-// #include "matrix.hpp"
+// #include "main.cpp"
 
 using namespace std;
 
-int main(){
-    int i = 0;
-    float M[2][2], I[2][2];
+void Encrypt(){
+    int i = 0, nP[2][50];
+    float M[2][2], I[2][2],E[2][50];
     char P[2][50];
     float D = 0;
     string phrase;
@@ -19,6 +19,11 @@ int main(){
     for(int l = 0; l < 2; l ++){
         for(int c = 0; c < 50; c++){
             P[l][c] = 0;
+        }
+    }
+    for(int l = 0; l < 2; l ++){
+        for(int c = 0; c < 50; c++){
+            E[l][c] = 0;
         }
     }
 //Insert Key Matrix ============================================================
@@ -45,13 +50,16 @@ int main(){
     I[1][1] = (1.0/D) * M[0][0];
     I[0][1] = (1.0/D) * -M[0][1];
     I[1][0] = (1.0/D) * -M[1][0];
-//==============================================================================
+//Insert the phrase to a Matrix ================================================
     cout << "Insert the phrase to be Encrypted: " << endl;
+
     cin.ignore();
     getline(cin, phrase);
     if(phrase.length()%2 != 0){
         phrase = phrase + " ";
     }
+
+    cout << "\nMatrix form:\n";
     for(int l = 0; l < 2; l++){
         for(int c = 0; c < (phrase.length()/2); c++){
             P[l][c] = phrase[i];
@@ -60,9 +68,39 @@ int main(){
         }
         cout << "\n";
     }
-//==============================================================================
-    // system("clear");
-    cout << "Inverse of the Key Matrix:" << endl;
+//Transform to ASCII Table =====================================================
+    for(int l = 0; l < 2; l++){
+        for(int c = 0; c < (phrase.length()/2); c++){
+            nP[l][c] = P[l][c];
+        }
+    }
+//Multiplication of the Matrix Key and the Matrix Phrase =======================
+    for(int l = 0; l < 2; l++){
+        for(int k = 0; k < phrase.length()/2; k++){
+            for(int c = 0; c < 2; c++){
+                E[l][k] += I[l][c] * nP[c][k];
+            }
+        }
+    }
+
+//Phrase to ASCII ==============================================================
+    // for(int l = 0; l < 2; l++){
+    //     for(int c = 0; c < (phrase.length()/2); c++){
+    //         cout << nP[l][c] << endl;
+    //     }
+    // }
+
+//Encrypted Phrase =============================================================
+    cout << "\nEncrypted Message:\n";
+    for(int l = 0; l < 2; l++){
+        for(int c = 0; c < (phrase.length()/2); c++){
+            cout << E[l][c] << " ";
+        }
+    }
+    int index = phrase.length();
+    printf("\nIndex(You will need it): %d\n",index);
+//Print the Inverse of the Key Matrix ==========================================
+    cout << "\nInverse of the Key Matrix:\n";
     for(int l = 0; l < 2; l ++){
         for(int c = 0; c < 2; c++){
             cout << I[l][c];
@@ -71,8 +109,5 @@ int main(){
         cout << "\n";
     }
 //==============================================================================
-
-
-
-    return 0;
+cout << endl;
 }
